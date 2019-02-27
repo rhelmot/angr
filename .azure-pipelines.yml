@@ -40,6 +40,6 @@ jobs:
       targetPath: .
 
   - script: |
-    cd build
-    ../ci-settings/scripts/test.sh tests.txt
+      cd build
+      ../ci-settings/scripts/test.sh tests.txt
 

@@ -30,6 +30,8 @@ jobs:
     - job: test
       pool:
         vmImage: ubuntu-16.04
+      dependsOn: Build
+      condition: succeeded()
       steps:
       - script: |
             sudo dpkg --add-architecture i386

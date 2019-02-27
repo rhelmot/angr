@@ -1,48 +1,45 @@
 jobs:
-  - job: Build
-    pool:
-      vmImage: ubuntu-16.04
-      container:
-        image: angr/ci:latest
-        steps:
-          - script: ./ci-settings/scripts/latest_deps.sh
+- job: Build
+  pool:
+    vmImage: ubuntu-16.04
+  container:
+    image: angr/ci:latest
+  steps:
+  - script: ./ci-settings/scripts/latest_deps.sh
 
-          - script: |
-            mkdir build
-            ./ci-settings/scripts/resolve_refs.py ./ci-settings/conf ./build $(Build.Repository.Uri) $(Build.SourceBranch)
+  - script: |
+      mkdir build
+      ./ci-settings/scripts/resolve_refs.py ./ci-settings/conf ./build $(Build.Repository.Uri) $(Build.SourceBranch)
 
-          - script: |
-            cd build
-            ./install.sh
-            source virtualenv/bin/activate
-            grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | ../ci-settings-master/scripts/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
-            #cd ..
-            #tar -czf build.tar.gz build/src build/virtualenv build/tests.txt
+  - script: |
+      cd build
+      ./install.sh
+      source virtualenv/bin/activate
+      grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | ../ci-settings-master/scripts/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
+      #cd ..
+      #tar -czf build.tar.gz build/src build/virtualenv build/tests.txt
 
-          - task: PublishPipelineArtifact@0
-            inputs:
-              artifactName: "Build archive"
-              targetPath: ./build
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: "Build archive"
+      targetPath: ./build
 
-          - job: test
-            pool:
-              vmImage: ubuntu-16.04
-              dependsOn: Build
-              condition: succeeded()
-              steps:
-                - script: |
-                  sudo dpkg --add-architecture i386
-                  sudo apt update
-                  sudo apt install -y vim build-essential python3 python3-dev python3-pip zip git libffi-dev libtool libtool-bin wget automake bison cmake nasm clang libglib2.0-dev socat libc6:i386 libgcc1:i386 libstdc++6:i386 libtinfo5:i386 zlib1g:i386
-                  wget https://github.com/rhelmot/ci-settings/archive/master.zip
-                  unzip master.zip
+- job: test
+  pool:
+    vmImage: ubuntu-16.04
+  container:
+    image: angr/ci:latest
+  dependsOn: Build
+  condition: succeeded()
+  steps:
+  - script: ./ci-settings/scripts/latest_deps.sh
 
-                - task: DownloadPipelineArtifact@0
-                  inputs:
-                    artifactName: "Build archive"
-                    targetPath: .
+  - task: DownloadPipelineArtifact@0
+    inputs:
+      artifactName: "Build archive"
+      targetPath: .
 
-                - script: |
-                  cd build
-                  ../ci-settings-master/scripts/test.sh tests.txt
+  - script: |
+    cd build
+    ../ci-settings/scripts/test.sh tests.txt
 

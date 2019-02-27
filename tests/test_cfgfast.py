@@ -561,7 +561,6 @@ def test_function_leading_blocks_merging():
                              "Block 0x800079b is found, but it should not exist.")
     nose.tools.assert_in(0x8000799, cfg.kb.functions[0x8000799].block_addrs_set,
                          "Block 0x8000799 is not found inside function 0x8000799.")
-    import ipdb; ipdb.set_trace()
     nose.tools.assert_equal(next(iter(b for b in cfg.kb.functions[0x8000799].blocks if b.addr == 0x8000799)).size, 6,
                             "Block 0x800079b has an incorrect size.")
 

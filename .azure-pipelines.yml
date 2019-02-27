@@ -12,7 +12,7 @@ jobs:
 
       - script: |
             mkdir build
-            ./ci-settings-master/scripts/resolve_refs.py ./ci-settings-master/conf ./build ${Build.Repository.Uri} ${Build.SourceBranch}
+            ./ci-settings-master/scripts/resolve_refs.py ./ci-settings-master/conf ./build $(Build.Repository.Uri) $(Build.SourceBranch)
 
       - script: |
             cd build

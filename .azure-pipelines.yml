@@ -22,7 +22,7 @@ jobs:
             #cd ..
             #tar -czf build.tar.gz build/src build/virtualenv build/tests.txt
 
-      - task: PublishPipelineArtifact@
+      - task: PublishPipelineArtifact@0
         inputs:
             artifactName: "Build archive"
             targetPath: ./build

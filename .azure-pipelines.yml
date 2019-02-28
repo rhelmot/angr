@@ -12,11 +12,11 @@ jobs:
 
   - script: |
       mkdir build
-      /root/scripts/resolve_refs.py /root/conf ./build $(Build.Repository.Uri) $(Build.SourceBranch)
+      /root/scripts/resolve_refs.py /root/conf /root/wheels ./build $(Build.Repository.Uri) $(Build.SourceBranch)
 
   - script: |
       cd build
-      WHEELS=/root/wheels ./install.sh
+      ./install.sh
       source virtualenv/bin/activate
       grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | /root/scripts/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
       #cd ..

@@ -45,3 +45,8 @@ jobs:
       cd build
       /root/scripts/test.sh tests.txt
 
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: "Results"
+      targetPath: "build/results"
+

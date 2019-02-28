@@ -16,7 +16,7 @@ jobs:
 
   - script: |
       cd build
-      ./install.sh
+      WHEELS=/root/wheels ./install.sh
       source virtualenv/bin/activate
       grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | /root/scripts/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
       #cd ..

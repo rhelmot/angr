@@ -6,6 +6,7 @@ jobs:
     image: angr/ci:latest
   steps:
   - script: |
+      env
       cd /root/wheels
       git fetch
       git reset --hard $(Build.Repository.BranchName) || true

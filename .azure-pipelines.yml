@@ -53,7 +53,7 @@ jobs:
   - script: /root/scripts/azure-test.sh
 
   - task: PublishTestResults@2
-    conditions: succeededOrFailed()
+    condition: succeededOrFailed()
     inputs:
       testRunner: "XUnit"
       testResultsFiles: "results/*.xml"

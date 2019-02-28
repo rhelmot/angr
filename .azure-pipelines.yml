@@ -5,23 +5,7 @@ jobs:
   container:
     image: angr/ci:latest
   steps:
-  - script: |
-      env
-      cd /root/wheels
-      git fetch
-      git reset --hard $(Build.Repository.BranchName) || true
-
-  - script: |
-      mkdir build
-      /root/scripts/resolve_refs.py /root/conf /root/wheels ./build $(Build.Repository.Uri) $(Build.SourceBranch)
-
-  - script: |
-      cd build
-      ./install.sh
-      source virtualenv/bin/activate
-      grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | /root/scripts/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
-      cd ..
-      tar -czf build.tar.gz build/src build/virtualenv build/tests.txt
+  - script: /root/scripts/azure-build.sh
 
   - task: PublishPipelineArtifact@0
     inputs:
@@ -35,16 +19,38 @@ jobs:
     image: angr/ci:latest
   dependsOn: Build
   condition: succeeded()
+  variables:
+    NUM_WORKERS: 10
+  strategy:
+    maxParallel: 10
+    matrix:
+      worker_0:
+        WORKER: 0
+      worker_1:
+        WORKER: 1
+      worker_2:
+        WORKER: 2
+      worker_3:
+        WORKER: 3
+      worker_4:
+        WORKER: 4
+      worker_5:
+        WORKER: 5
+      worker_6:
+        WORKER: 6
+      worker_7:
+        WORKER: 7
+      worker_8:
+        WORKER: 8
+      worker_9:
+        WORKER: 9
   steps:
   - task: DownloadPipelineArtifact@0
     inputs:
       artifactName: "Build archive"
       targetPath: .
 
-  - script: |
-      tar -xf build.tar.gz
-      cd build
-      /root/scripts/test.sh tests.txt
+  - script: /root/scripts/azure-test.sh
 
   - task: PublishPipelineArtifact@0
     inputs:

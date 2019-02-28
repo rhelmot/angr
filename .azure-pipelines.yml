@@ -52,8 +52,10 @@ jobs:
 
   - script: /root/scripts/azure-test.sh
 
-  - task: PublishPipelineArtifact@0
+  - task: PublishTestResults@2
+    conditions: succeededOrFailed()
     inputs:
-      artifactName: "Results"
-      targetPath: "build/results"
+      testRunner: "XUnit"
+      testResultsFiles: "results/*.xml"
+      mergeTestResults: true
 

@@ -5,17 +5,20 @@ jobs:
   container:
     image: angr/ci:latest
   steps:
-  - script: ./ci-settings/scripts/latest_deps.sh
+  - script: |
+      cd /root/wheels
+      git fetch
+      git reset --hard $(Build.Repository.BranchName) || true
 
   - script: |
       mkdir build
-      ./ci-settings/scripts/resolve_refs.py ./ci-settings/conf ./build $(Build.Repository.Uri) $(Build.SourceBranch)
+      /root/scripts/resolve_refs.py /root/conf ./build $(Build.Repository.Uri) $(Build.SourceBranch)
 
   - script: |
       cd build
       ./install.sh
       source virtualenv/bin/activate
-      grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | ../ci-settings-master/scripts/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
+      grep '^def test_' ./src/*/tests/test_*.py | sed 's/def //' | cut -d '(' -f 1 | /root/scripts/filter-tests.py --eval-attribute 'speed != "slow"' > tests.txt
       #cd ..
       #tar -czf build.tar.gz build/src build/virtualenv build/tests.txt
 
@@ -32,8 +35,6 @@ jobs:
   dependsOn: Build
   condition: succeeded()
   steps:
-  - script: ./ci-settings/scripts/latest_deps.sh
-
   - task: DownloadPipelineArtifact@0
     inputs:
       artifactName: "Build archive"

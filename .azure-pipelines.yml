@@ -27,7 +27,7 @@ jobs:
       artifactName: "Build archive"
       targetPath: ./build
 
-- job: test
+- job: Test
   pool:
     vmImage: ubuntu-16.04
   container:
@@ -42,5 +42,5 @@ jobs:
 
   - script: |
       cd build
-      ../ci-settings/scripts/test.sh tests.txt
+      /root/scripts/test.sh tests.txt
 

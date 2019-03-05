@@ -10,7 +10,7 @@ jobs:
 
   - task: PublishPipelineArtifact@0
     inputs:
-      artifactName: "Build archive"
+      artifactName: "build_archive"
       targetPath: ./build.tar.gz
 
 - job: Test
@@ -49,7 +49,7 @@ jobs:
   steps:
   - task: DownloadPipelineArtifact@0
     inputs:
-      artifactName: "Build archive"
+      artifactName: "build_archive"
       targetPath: .
 
   - script: /root/scripts/azure-test.sh

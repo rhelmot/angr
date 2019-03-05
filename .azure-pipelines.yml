@@ -4,6 +4,7 @@ jobs:
     vmImage: ubuntu-16.04
   container:
     image: angr/ci:latest
+    options: --cap-add=SYS_PTRACE
   steps:
   - script: /root/scripts/azure-build.sh
 
@@ -17,6 +18,7 @@ jobs:
     vmImage: ubuntu-16.04
   container:
     image: angr/ci:latest
+    options: --cap-add=SYS_PTRACE
   dependsOn: Build
   condition: succeeded()
   variables:

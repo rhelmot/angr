@@ -6,7 +6,7 @@ jobs:
     image: angr/ci:latest
     options: --cap-add=SYS_PTRACE
   steps:
-  - script: /root/scripts/azure-build.sh
+  - script: cat /proc/meminfo; /root/scripts/azure-build.sh
 
   - task: PublishPipelineArtifact@0
     inputs:
